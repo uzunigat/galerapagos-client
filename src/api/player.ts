@@ -1,4 +1,5 @@
 import { serverUrl } from '../config'
+import { fetchWithOptions } from './fetcher'
 
 type LoginProps = {
   email: string
@@ -8,7 +9,5 @@ type LoginProps = {
 export const login = ({ email, password }: LoginProps) => {
   const url = `${serverUrl}/api/v1/player/login/${email}/${password}`
 
-  return fetch(url, {
-    method: 'GET',
-  })
+  return fetchWithOptions<Player>(url, { method: 'GET' })
 }

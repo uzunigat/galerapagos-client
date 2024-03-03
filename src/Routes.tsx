@@ -1,6 +1,7 @@
 import { Routes as ReactRoutes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AppRoutes } from './context/routes'
 import { Login } from './modules/Login'
+import { Home } from './modules/Home'
 
 
 const NavigateToAddItems = () => {

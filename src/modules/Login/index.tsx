@@ -10,8 +10,8 @@ export const Login = () => {
 
     const handleSubmit = async () => {
         console.log('@@ Submited')
-        const response = await login({ email, password })
-        if (response.status === 200) {
+        const player = await login({ email, password })
+        if (player) {
             navigate('/home')
         }
     }
