@@ -2,6 +2,8 @@ import { Routes as ReactRoutes, Route, Navigate, useLocation } from 'react-route
 import { AppRoutes } from './context/routes'
 import { Login } from './modules/Login'
 import { Home } from './modules/Home'
+import { WaitingForPlayers } from './modules/WaitingForPlayers'
+import { JoinGame } from './modules/JoinGame'
 
 
 const NavigateToAddItems = () => {
@@ -15,6 +17,8 @@ export const Routes = () => {
       <Route path={AppRoutes.ROOT} element={<NavigateToAddItems />} />
       <Route path={AppRoutes.LOGIN} element={<Login />} />
       <Route path={AppRoutes.HOME} element={<Home />} />
+      <Route path={AppRoutes.WAITING_FOR_PLAYERS} element={<WaitingForPlayers />} />
+      <Route path={AppRoutes.JOIN_GAME} element={<JoinGame />} />
     </ReactRoutes>
   )
 }

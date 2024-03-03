@@ -9,9 +9,9 @@ export const Login = () => {
     const navigate = useNavigate()
 
     const handleSubmit = async () => {
-        console.log('@@ Submited')
         const player = await login({ email, password })
         if (player) {
+            localStorage.setItem('playerGid', player.gid)
             navigate('/home')
         }
     }

@@ -8,14 +8,15 @@ export const Home = () => {
 
     const handleCreateGame = async () => {
         const game = await createGame()
-        console.log('@@ game', game)
 
         if (game) {
-            navigate(`/game/${game.gid}`)
+            navigate(`/waiting-for-players?gameGid=${game.gid}`, { state: { isOwner: true } })
         }
     }
 
-    const handleJoinGame = async () => {}
+    const handleJoinGame = async () => {
+        navigate('/join-game')
+    }
 
     return (
         <>

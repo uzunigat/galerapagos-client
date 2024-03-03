@@ -1,5 +1,6 @@
 import { serverUrl } from '../config'
 import { fetchWithOptions } from './fetcher'
+import { Player } from './models/player'
 
 type LoginProps = {
   email: string
