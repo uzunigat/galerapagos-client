@@ -1,50 +1,62 @@
-import useWebSocket, { ReadyState } from "react-use-websocket";
+import useWebSocket from "react-use-websocket";
 import { useEffect } from "react";
 import { usePlayerGameRelation } from "../../api/playerGameRelation";
-import { Button } from "@mui/material";
+import { Button, Card, CardContent, Container, Grid, Typography } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { endGame } from "../../api/game";
 import { AppRoutes } from "../../context/routes";
 
-const GAME_GID = '0001.f33de625-2d99-47ba-ba99-45584303cd11'
 
-type WaitingForPlayersProps = {
-  isOwner?: boolean
-}
-
-export const WaitingForPlayers = ({isOwner = false}: WaitingForPlayersProps) => {
-  const { data: players } = usePlayerGameRelation({ gid: GAME_GID })
+export const WaitingForPlayers = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const playerGid = localStorage.getItem('playerGid')
+  const searchParams = new URLSearchParams(document.location.search)
+  const { data: players } = usePlayerGameRelation({ gid: searchParams.get('gameGid')})
 
   const handleFinishGame = async () => {
-    await endGame(GAME_GID)
+    await endGame(searchParams.get('gameGid')!!)
     navigate(AppRoutes.HOME)
   }
 
-  const { lastMessage, readyState } = useWebSocket(`ws://127.0.0.1:3001/api/v1/ws?playerGid=${playerGid}&gameGid=${GAME_GID}`, {
+  const handleLeaveGame = () => {
+    navigate(AppRoutes.HOME)
+  } 
+
+  const { lastMessage } = useWebSocket(`ws://127.0.0.1:3001/api/v1/ws?playerGid=${playerGid}&gameGid=${searchParams.get('gameGid')}`, {
     share: true,
   });
 
   useEffect(() => {
     if (lastMessage !== null) {
-      console.log('@@ lastMessage', lastMessage);``
+      console.log('@@ lastMessage', lastMessage);
     }
   }, [lastMessage]);
 
-  const connectionStatus = {
-    [ReadyState.CONNECTING]: 'Connecting',
-    [ReadyState.OPEN]: 'Open',
-    [ReadyState.CLOSING]: 'Closing',
-    [ReadyState.CLOSED]: 'Closed',
-    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-  }[readyState];
   return (
-    <div>
-      {location.state.isOwner && <Button variant="outlined" onClick={handleFinishGame}> {"<"} </Button>}
-      WaitingForPlayers 
-      {connectionStatus}
-    </div>
+    <Container>
+      {location.state?.isOwner ? <Button variant="outlined" onClick={handleFinishGame}> {"<"} </Button> : <Button variant="outlined" onClick={handleLeaveGame}> {"<"} </Button>}
+      <Typography>Waiting For Players</Typography>
+      <Grid container spacing={2}>
+        {players?.map(player => (
+          <Grid item xs={3} key={player.gid}>
+            <Card key={player.gid}>
+              <CardContent key={player.gid}>
+                {`${player.givenName} ${player.familyName}`}
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+        {Array.from({ length: 12 - (players?.length || 0) }).map((_, index) => (
+          <Grid item xs={3} key={index}>
+            <Card>
+              <CardContent>
+                {'...'}
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
   )
 }
